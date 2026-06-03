@@ -21,7 +21,7 @@
   { "regex": "meta-externalagent", "name": "Meta External Agent", "category": "Crawler" },
   { "regex": "twitterbot", "name": "Twitterbot", "category": "Social Media Agent" },
   { "regex": "linkedinbot", "name": "LinkedInBot", "category": "Social Media Agent" },
-  { "regex": "pinterest(?:bot|/)", "name": "Pinterest", "category": "Social Media Agent" },
+  { "regex": "pinterestbot", "name": "Pinterest", "category": "Social Media Agent" },
   { "regex": "whatsapp", "name": "WhatsApp", "category": "Social Media Agent" },
   { "regex": "telegrambot", "name": "TelegramBot", "category": "Social Media Agent" },
   { "regex": "slackbot", "name": "Slackbot", "category": "Social Media Agent" },
