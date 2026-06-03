@@ -16,6 +16,7 @@ func TestDetectBotKnownBots(t *testing.T) {
 		{"ahrefsbot", "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)", "AhrefsBot", "Crawler"},
 		{"yandexbot", "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)", "Yandex Bot", "Search bot"},
 		{"pinterestbot", "Pinterestbot/1.0 (+https://www.pinterest.com/bot.html)", "Pinterest", "Social Media Agent"},
+		{"pinterest legacy crawler", "Pinterest/0.2 (+https://www.pinterest.com/bot.html)", "Pinterest", "Social Media Agent"},
 		{"generic catch-all", "Mozilla/5.0 (compatible; ExampleService crawler/1.0)", "Generic Bot", "Generic"},
 	}
 	for _, tt := range tests {
@@ -39,7 +40,8 @@ func TestDetectBotNonBot(t *testing.T) {
 		// A real mobile device whose UA embeds "bot" inside an app name.
 		{"botim app", "Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Mobile Safari/537.36 Botim/1.0"},
 		// The Pinterest mobile app (not the crawler) carries a bare Pinterest/ token.
-		{"pinterest app", "Mozilla/5.0 (Linux; Android 8.0.0; XT1635-02) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0 Mobile Safari/537.36 [Pinterest/Android]"},
+		{"pinterest android app", "Mozilla/5.0 (Linux; Android 8.0.0; XT1635-02) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0 Mobile Safari/537.36 [Pinterest/Android]"},
+		{"pinterest ios app", "Pinterest/11.30.0 (iPhone; iOS 16.0; Scale/3.00)"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
