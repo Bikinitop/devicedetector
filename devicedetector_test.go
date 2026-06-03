@@ -49,3 +49,23 @@ func TestDetect(t *testing.T) {
 		})
 	}
 }
+
+func TestDeviceTypeString(t *testing.T) {
+	tests := []struct {
+		t    DeviceType
+		want string
+	}{
+		{Desktop, "desktop"},
+		{Mobile, "mobile"},
+		{Tablet, "tablet"},
+		{Bot, "bot"},
+		{Unknown, "unknown"},
+		{DeviceType(99), "unknown"}, // out-of-range falls through to the default
+	}
+
+	for _, tt := range tests {
+		if got := tt.t.String(); got != tt.want {
+			t.Errorf("DeviceType(%d).String() = %q, want %q", tt.t, got, tt.want)
+		}
+	}
+}

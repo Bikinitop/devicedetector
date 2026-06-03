@@ -57,10 +57,30 @@ func (d *Detector) Detect(userAgent string) Device {
 
 // classify maps a lower-cased User-Agent string to a DeviceType.
 //
-// TODO(you): implement the classification rules. See the note from Claude
-// in the conversation — this is the core heuristic and the design choices
-// here (rule ordering, which tokens to match) shape the whole library.
+// Order is significant: User-Agent strings overlap (an iPad UA contains
+// "mobile", a bot UA contains "mozilla"), so the most specific/overriding
+// categories are tested first — bot, then tablet, then mobile, then desktop.
 func classify(ua string) DeviceType {
-	// Replace this stub with real detection logic.
-	return Unknown
+	switch {
+	case containsAny(ua, "bot", "spider", "crawl"):
+		return Bot
+	case containsAny(ua, "ipad", "tablet"):
+		return Tablet
+	case containsAny(ua, "iphone", "ipod", "android", "mobile"):
+		return Mobile
+	case containsAny(ua, "windows", "macintosh", "linux", "x11"):
+		return Desktop
+	default:
+		return Unknown
+	}
+}
+
+// containsAny reports whether s contains at least one of the given substrings.
+func containsAny(s string, subs ...string) bool {
+	for _, sub := range subs {
+		if strings.Contains(s, sub) {
+			return true
+		}
+	}
+	return false
 }
