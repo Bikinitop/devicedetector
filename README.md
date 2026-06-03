@@ -32,8 +32,6 @@ Detection is a fast, heuristic **substring match** on the User-Agent. It is
 intentionally minimal, which means some real-world cases are out of scope for
 now (tracked as future work):
 
-- **Android tablets** are reported as `Mobile` — their UA carries `android`
-  but usually neither `tablet` nor `mobile`.
 - **iPadOS 13+ in desktop mode** is reported as `Desktop` — Apple sends a UA
   byte-identical to desktop Safari, so an iPad cannot be distinguished from a
   Mac by User-Agent alone (it needs client-side signals such as

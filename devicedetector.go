@@ -58,15 +58,25 @@ func (d *Detector) Detect(userAgent string) Device {
 // classify maps a lower-cased User-Agent string to a DeviceType.
 //
 // Order is significant: User-Agent strings overlap (an iPad UA contains
-// "mobile", a bot UA contains "mozilla"), so the most specific/overriding
-// categories are tested first — bot, then tablet, then mobile, then desktop.
+// "mobile", a bot UA contains "android"/"mozilla"), so the most
+// specific/overriding categories are tested first — bot, then Android
+// (split into phone vs. tablet), then iPad/tablet, then other mobile,
+// then desktop.
 func classify(ua string) DeviceType {
 	switch {
 	case containsAny(ua, "bot", "spider", "crawl"):
 		return Bot
+	case strings.Contains(ua, "android"):
+		// Android phones carry the "mobile" token in their UA; tablets
+		// omit it. This is the one reliable phone/tablet signal Android
+		// exposes via User-Agent.
+		if strings.Contains(ua, "mobile") {
+			return Mobile
+		}
+		return Tablet
 	case containsAny(ua, "ipad", "tablet"):
 		return Tablet
-	case containsAny(ua, "iphone", "ipod", "android", "mobile"):
+	case containsAny(ua, "iphone", "ipod", "mobile"):
 		return Mobile
 	case containsAny(ua, "windows", "macintosh", "linux", "x11"):
 		return Desktop

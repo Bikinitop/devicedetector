@@ -25,7 +25,8 @@ The core flow is `New() -> Detector.Detect(userAgent) -> Device`:
 - `Detector` is an empty, immutable struct and is therefore safe for concurrent use — a single instance can be shared across goroutines. Do not add mutable state to it without revisiting that concurrency contract.
 - `Detect` lower-cases the User-Agent once, then delegates the actual categorization to the unexported `classify` helper. Keep `classify` operating on already-lowercased input so matching logic stays simple.
 - `DeviceType` is an `int`-backed enum implementing `Stringer`. When adding a new category, add the constant **and** its `String()` case together.
-- Classification rule **ordering is correctness-critical**: more specific/overriding categories must be checked first (bot → tablet → mobile → desktop → unknown), because User-Agent strings overlap (e.g. an iPad UA contains both tablet and mobile-like tokens).
+- Classification rule **ordering is correctness-critical**: more specific/overriding categories must be checked first (bot → android → iPad/tablet → other mobile → desktop → unknown), because User-Agent strings overlap (e.g. an iPad UA contains both tablet and mobile-like tokens).
+- **Android is split on the `mobile` token**: Android phones carry `mobile` in their UA, tablets omit it — this is the one reliable phone/tablet signal Android exposes, so it gets a dedicated branch ahead of the generic tablet/mobile cases.
 
 ## Workflow (required)
 
