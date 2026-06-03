@@ -36,6 +36,9 @@ func (t DeviceType) String() string {
 type Device struct {
 	Type      DeviceType
 	UserAgent string
+	// Bot is non-nil only when Type == Bot; it carries the identified bot's
+	// name and category.
+	Bot *BotInfo
 }
 
 // Detector parses User-Agent strings. Create one with New and reuse it;
@@ -48,24 +51,27 @@ func New() *Detector {
 }
 
 // Detect inspects a User-Agent string and returns the Device it describes.
+// Bots are matched first (against the raw User-Agent); anything else is
+// classified by device type.
 func (d *Detector) Detect(userAgent string) Device {
+	if bot := detectBot(userAgent); bot != nil {
+		return Device{Type: Bot, UserAgent: userAgent, Bot: bot}
+	}
 	return Device{
 		Type:      classify(strings.ToLower(userAgent)),
 		UserAgent: userAgent,
 	}
 }
 
-// classify maps a lower-cased User-Agent string to a DeviceType.
+// classify maps a lower-cased User-Agent string to a DeviceType. Bot
+// detection happens earlier in Detect, so this handles device types only.
 //
 // Order is significant: User-Agent strings overlap (an iPad UA contains
-// "mobile", a bot UA contains "android"/"mozilla"), so the most
-// specific/overriding categories are tested first — bot, then Android
-// (split into phone vs. tablet), then iPad/tablet, then other mobile,
-// then desktop.
+// "mobile"), so the most specific/overriding categories are tested first —
+// Android (split into phone vs. tablet), then iPad/tablet, then other
+// mobile, then desktop.
 func classify(ua string) DeviceType {
 	switch {
-	case containsAny(ua, "bot", "spider", "crawl"):
-		return Bot
 	case strings.Contains(ua, "android"):
 		// Android phones carry the "mobile" token in their UA; tablets
 		// omit it. This is the one reliable phone/tablet signal Android
