@@ -1,0 +1,42 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Project
+
+`devicedetector` is a Go library (module `github.com/Bikinitop/devicedetector`) that parses HTTP `User-Agent` strings and reports device information. It is an importable package with no `main` — the public API lives in the root package.
+
+## Commands
+
+```bash
+go test ./...                          # run all tests
+go test -run TestDetect/iphone_is_mobile ./...   # run a single test case (use the subtest name after the slash)
+go test -cover ./...                   # show coverage summary
+go test -coverprofile=coverage.out ./... && go tool cover -func=coverage.out   # per-function coverage
+go test -coverprofile=coverage.out ./... && go tool cover -html=coverage.out   # coverage in browser
+go vet ./...                           # static analysis
+gofmt -l .                             # list files needing formatting (must be empty)
+```
+
+## Architecture
+
+The core flow is `New() -> Detector.Detect(userAgent) -> Device`:
+
+- `Detector` is an empty, immutable struct and is therefore safe for concurrent use — a single instance can be shared across goroutines. Do not add mutable state to it without revisiting that concurrency contract.
+- `Detect` lower-cases the User-Agent once, then delegates the actual categorization to the unexported `classify` helper. Keep `classify` operating on already-lowercased input so matching logic stays simple.
+- `DeviceType` is an `int`-backed enum implementing `Stringer`. When adding a new category, add the constant **and** its `String()` case together.
+- Classification rule **ordering is correctness-critical**: more specific/overriding categories must be checked first (bot → tablet → mobile → desktop → unknown), because User-Agent strings overlap (e.g. an iPad UA contains both tablet and mobile-like tokens).
+
+## Workflow (required)
+
+These rules are mandatory for all changes in this repo:
+
+- **TDD, strictly red → green → refactor.** Write a failing test first, confirm it fails (red), make it pass with the minimum change (green), then refactor. Tests double as the spec — see `devicedetector_test.go` for the table-driven pattern to follow.
+- **Coverage must stay above 90%.** Verify with `go test -coverprofile=coverage.out ./... && go tool cover -func=coverage.out` before opening a PR.
+- **Never commit directly to `main`.** Always create a feature branch and do the work there.
+- **Every change ships as a PR.** After implementation, open a PR rather than merging locally.
+- **PR gate before merge** — a PR must pass all of these, in order, before it can be merged:
+  1. `/simplify` — apply simplification/cleanup to the change.
+  2. PR review (`/code-review` or `/review`).
+  3. Address bot review comments — read the PR's bot-generated review comments, fix the issues they raise, and push the fixes.
+  Only merge once all three are done and CI is green.
