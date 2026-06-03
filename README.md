@@ -45,9 +45,10 @@ monitoring tools, AI crawlers, and a generic catch-all.
 
 ## Limitations
 
-Detection is a fast, heuristic **substring match** on the User-Agent. It is
-intentionally minimal, which means some real-world cases are out of scope for
-now (tracked as future work):
+Detection is intentionally minimal: device typing is a heuristic **substring
+match** on the User-Agent, and bots are matched against a curated regex
+ruleset. Some real-world cases are out of scope for now (tracked as future
+work):
 
 - **iPadOS 13+ in desktop mode** is reported as `Desktop` — Apple sends a UA
   byte-identical to desktop Safari, so an iPad cannot be distinguished from a
