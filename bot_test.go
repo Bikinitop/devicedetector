@@ -15,6 +15,9 @@ func TestDetectBotKnownBots(t *testing.T) {
 		{"whatsapp", "WhatsApp/2.23.20.0 A", "WhatsApp", "Social Media Agent"},
 		{"ahrefsbot", "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)", "AhrefsBot", "Crawler"},
 		{"yandexbot", "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)", "Yandex Bot", "Search bot"},
+		{"sogou spider", "Sogou web spider/4.0(+http://www.sogou.com/docs/help/webmasters.htm#07)", "Sogou Spider", "Search bot"},
+		{"duckduckbot", "DuckDuckBot/1.1; (+http://duckduckgo.com/duckduckbot.html)", "DuckDuckBot", "Search bot"},
+		{"duckduckgo favicons bot", "Mozilla/5.0 (compatible; DuckDuckGo-Favicons-Bot/1.0; +http://duckduckgo.com)", "DuckDuckGo", "Search bot"},
 		{"pinterestbot", "Pinterestbot/1.0 (+https://www.pinterest.com/bot.html)", "Pinterest", "Social Media Agent"},
 		{"pinterest legacy crawler", "Pinterest/0.2 (+https://www.pinterest.com/bot.html)", "Pinterest", "Social Media Agent"},
 		{"generic catch-all", "Mozilla/5.0 (compatible; ExampleService crawler/1.0)", "Generic Bot", "Generic"},
@@ -42,6 +45,10 @@ func TestDetectBotNonBot(t *testing.T) {
 		// The Pinterest mobile app (not the crawler) carries a bare Pinterest/ token.
 		{"pinterest android app", "Mozilla/5.0 (Linux; Android 8.0.0; XT1635-02) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0 Mobile Safari/537.36 [Pinterest/Android]"},
 		{"pinterest ios app", "Pinterest/11.30.0 (iPhone; iOS 16.0; Scale/3.00)"},
+		// The DuckDuckGo mobile browser carries a DuckDuckGo/5 token but is a real user.
+		{"duckduckgo browser", "Mozilla/5.0 (Linux; Android 13; Pixel) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/120.0 Mobile DuckDuckGo/5 Safari/537.36"},
+		// The Sogou mobile browser carries a SogouMobileBrowser token but is a real user.
+		{"sogou mobile browser", "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/78.0 Mobile Safari/537.36 SogouMobileBrowser/5.28.0"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
