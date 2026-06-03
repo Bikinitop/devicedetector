@@ -22,6 +22,14 @@ gofmt -l .                             # list files needing formatting (must be 
 
 The core flow is `New() -> Detector.Detect(userAgent) -> Device`:
 
+- **Bot detection runs first** (`bot.go`): `detectBot` matches the raw UA
+  against an embedded, ordered ruleset compiled from `bots.json`
+  (case-insensitive RE2 regexes, first-match-wins). A hit sets `Type == Bot`
+  and populates `Device.Bot`. `bots.json` is our own curated data — matomo's
+  architecture, not its LGPL-licensed data. To add a bot, add a `{regex, name,
+  category}` entry (specific rules before the generic catch-all). Bad
+  data/regex panics at init; a test compiles every rule.
+
 - `Detector` is an empty, immutable struct and is therefore safe for concurrent use — a single instance can be shared across goroutines. Do not add mutable state to it without revisiting that concurrency contract.
 - `Detect` lower-cases the User-Agent once, then delegates the actual categorization to the unexported `classify` helper. Keep `classify` operating on already-lowercased input so matching logic stays simple.
 - `DeviceType` is an `int`-backed enum implementing `Stringer`. When adding a new category, add the constant **and** its `String()` case together.

@@ -26,6 +26,23 @@ func main() {
 }
 ```
 
+## Bot detection
+
+When the User-Agent matches a known bot, `Detect` sets `Type` to `Bot` and
+populates `Device.Bot` with the bot's name and category:
+
+```go
+device := d.Detect("Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)")
+if device.Bot != nil {
+    fmt.Println(device.Bot.Name, "-", device.Bot.Category) // Googlebot - Search bot
+}
+```
+
+Bots are matched against an embedded, curated ruleset (`bots.json`) of
+ordered case-insensitive regexes, first-match-wins. The list is **not
+exhaustive** — it covers common search engines, social crawlers, SEO and
+monitoring tools, AI crawlers, and a generic catch-all.
+
 ## Limitations
 
 Detection is a fast, heuristic **substring match** on the User-Agent. It is
@@ -36,9 +53,8 @@ now (tracked as future work):
   byte-identical to desktop Safari, so an iPad cannot be distinguished from a
   Mac by User-Agent alone (it needs client-side signals such as
   `navigator.maxTouchPoints`).
-- **Bot detection** keys on the substrings `bot`/`spider`/`crawl`, so it can
-  both over-match (a device/app token containing "bot") and miss tokenless
-  crawlers (e.g. `facebookexternalhit`, `WhatsApp`).
+- **Bot detection** uses a curated, non-exhaustive ruleset, so bots not in
+  `bots.json` are not identified and fall through to device classification.
 
 ## Development
 
