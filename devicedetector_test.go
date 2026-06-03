@@ -79,3 +79,29 @@ func TestDeviceTypeString(t *testing.T) {
 		}
 	}
 }
+
+func TestDetectPopulatesBot(t *testing.T) {
+	d := New()
+	dev := d.Detect("Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)")
+	if dev.Type != Bot {
+		t.Errorf("Type = %v, want Bot", dev.Type)
+	}
+	if dev.Bot == nil {
+		t.Fatal("Bot = nil, want non-nil")
+	}
+	if dev.Bot.Name != "Googlebot" || dev.Bot.Category != "Search bot" {
+		t.Errorf("Bot = {%q,%q}, want {Googlebot, Search bot}", dev.Bot.Name, dev.Bot.Category)
+	}
+}
+
+func TestDetectNonBotHasNilBot(t *testing.T) {
+	d := New()
+	// Mobile device with an app name containing "bot" — must be Mobile, not a bot.
+	dev := d.Detect("Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Mobile Safari/537.36 Botim/1.0")
+	if dev.Type != Mobile {
+		t.Errorf("Type = %v, want Mobile", dev.Type)
+	}
+	if dev.Bot != nil {
+		t.Errorf("Bot = %+v, want nil", dev.Bot)
+	}
+}
