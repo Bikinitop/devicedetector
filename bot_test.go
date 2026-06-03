@@ -14,6 +14,8 @@ func TestDetectBotKnownBots(t *testing.T) {
 		{"facebookexternalhit", "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)", "Facebook", "Social Media Agent"},
 		{"whatsapp", "WhatsApp/2.23.20.0 A", "WhatsApp", "Social Media Agent"},
 		{"ahrefsbot", "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)", "AhrefsBot", "Crawler"},
+		{"yandexbot", "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)", "Yandex Bot", "Search bot"},
+		{"generic catch-all", "Mozilla/5.0 (compatible; ExampleService crawler/1.0)", "Generic Bot", "Generic"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -37,7 +39,7 @@ func TestDetectBotNonBot(t *testing.T) {
 }
 
 func TestLoadBotRules(t *testing.T) {
-	if _, err := loadBotRules([]byte(`[{"regex":"(?i)googlebot","name":"Googlebot","category":"Search bot"}]`)); err != nil {
+	if _, err := loadBotRules([]byte(`[{"regex":"googlebot","name":"Googlebot","category":"Search bot"}]`)); err != nil {
 		t.Errorf("loadBotRules(valid) error = %v", err)
 	}
 	if _, err := loadBotRules([]byte(`not json`)); err == nil {
@@ -45,6 +47,12 @@ func TestLoadBotRules(t *testing.T) {
 	}
 	if _, err := loadBotRules([]byte(`[{"regex":"(","name":"x","category":"y"}]`)); err == nil {
 		t.Error("loadBotRules(bad regex) error = nil, want error")
+	}
+	if _, err := loadBotRules([]byte(`[{"regex":"","name":"x","category":"y"}]`)); err == nil {
+		t.Error("loadBotRules(empty regex) error = nil, want error")
+	}
+	if _, err := loadBotRules([]byte(`[{"regex":"x","name":"","category":"y"}]`)); err == nil {
+		t.Error("loadBotRules(empty name) error = nil, want error")
 	}
 }
 
