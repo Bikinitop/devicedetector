@@ -39,6 +39,15 @@ func TestBrandRulesLoaded(t *testing.T) {
 	}
 }
 
+func TestDetectBrandFromDeviceNotBrowser(t *testing.T) {
+	// Samsung Internet (SamsungBrowser) on a non-Samsung device must not
+	// override the actual device brand — brand is device-based, not browser-based.
+	ua := "Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/21.0 Chrome/115.0.0.0 Mobile Safari/537.36"
+	if got := detectBrand(ua); got != "Google" {
+		t.Errorf("detectBrand(%q) = %q, want Google (not Samsung from the browser token)", ua, got)
+	}
+}
+
 func TestDetectBrandNoSubstringFalsePositive(t *testing.T) {
 	// Brand tokens must be anchored so they don't match inside unrelated words.
 	cases := []struct{ name, ua string }{
