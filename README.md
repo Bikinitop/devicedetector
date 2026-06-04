@@ -1,5 +1,7 @@
 # devicedetector
 
+[![CI](https://github.com/Bikinitop/devicedetector/actions/workflows/ci.yml/badge.svg)](https://github.com/Bikinitop/devicedetector/actions/workflows/ci.yml)
+
 A small Go library for detecting device information from an HTTP `User-Agent` string.
 
 ## Install

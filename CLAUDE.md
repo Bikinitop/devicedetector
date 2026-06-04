@@ -36,6 +36,17 @@ The core flow is `New() -> Detector.Detect(userAgent) -> Device`:
 - Classification rule **ordering is correctness-critical**: more specific/overriding categories must be checked first (bot → android → iPad/tablet → other mobile → desktop → unknown), because User-Agent strings overlap (e.g. an iPad UA contains both tablet and mobile-like tokens).
 - **Android is split on the `mobile` token**: Android phones carry `mobile` in their UA, tablets omit it — this is the one reliable phone/tablet signal Android exposes, so it gets a dedicated branch ahead of the generic tablet/mobile cases.
 
+## CI/CD
+
+- **CI** (`.github/workflows/ci.yml`) runs on every pull request and push to
+  `main`: a `test` job (`go test -race` + the > 90% coverage gate) and a `lint`
+  job (`gofmt`, `go vet`, `golangci-lint`). This is the machine enforcement of
+  the quality rules below.
+- **Releases** are automated by release-please (`.github/workflows/release-please.yml`):
+  conventional commits on `main` drive a "Release PR" that, when merged, tags
+  `vX.Y.Z` and creates a GitHub Release. Keep using conventional-commit
+  messages (`feat:`, `fix:`, `docs:`, `chore:`) so versioning stays correct.
+
 ## Workflow (required)
 
 These rules are mandatory for all changes in this repo:
