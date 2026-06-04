@@ -66,3 +66,18 @@ func TestMatchVersioned(t *testing.T) {
 		t.Error("matchVersioned(no match) ok = true, want false")
 	}
 }
+
+func TestMatchFirstRawCapture(t *testing.T) {
+	rules := mustLoadVersionedRules([]byte(`[{"regex":"sm-([a-z0-9_]+)","name":"Samsung"}]`))
+	name, capture, ok := matchFirst(rules, "Mozilla/5.0 (Linux; Android 13; SM-G99_1B)")
+	if !ok || name != "Samsung" || capture != "G99_1B" {
+		t.Errorf("matchFirst = (%q,%q,%v), want (Samsung, G99_1B, true) — capture must NOT be normalized", name, capture, ok)
+	}
+	if _, _, ok := matchFirst(rules, "no match here"); ok {
+		t.Error("matchFirst(no match) ok = true, want false")
+	}
+	// matchVersioned still normalizes underscores to dots.
+	if _, v, _ := matchVersioned(rules, "Mozilla/5.0 (Linux; Android 13; SM-G99_1B)"); v != "G99.1B" {
+		t.Errorf("matchVersioned capture = %q, want G99.1B (normalized)", v)
+	}
+}

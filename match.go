@@ -60,20 +60,27 @@ func mustLoadVersionedRules(data []byte) []versionedRule {
 	return rules
 }
 
-// matchVersioned returns the name and version of the first rule that matches
-// userAgent (file order, first match wins), or ok=false if none match. version
-// is capture group 1 with "_" normalized to "." (for UA tokens like "17_0"),
-// or "" when the regex has no capture group.
-func matchVersioned(rules []versionedRule, userAgent string) (name, version string, ok bool) {
+// matchFirst returns the name and raw capture group 1 of the first rule that
+// matches userAgent (file order, first match wins), or ok=false if none match.
+// capture is "" when the regex has no capture group.
+func matchFirst(rules []versionedRule, userAgent string) (name, capture string, ok bool) {
 	for _, rule := range rules {
 		m := rule.re.FindStringSubmatch(userAgent)
 		if m == nil {
 			continue
 		}
 		if len(m) > 1 {
-			version = strings.ReplaceAll(m[1], "_", ".")
+			capture = m[1]
 		}
-		return rule.name, version, true
+		return rule.name, capture, true
 	}
 	return "", "", false
+}
+
+// matchVersioned is matchFirst with the capture treated as a version: "_" is
+// normalized to "." (for UA tokens like iOS "17_0"). The version is "" when the
+// regex has no capture group or no rule matches.
+func matchVersioned(rules []versionedRule, userAgent string) (name, version string, ok bool) {
+	name, capture, ok := matchFirst(rules, userAgent)
+	return name, strings.ReplaceAll(capture, "_", "."), ok
 }
