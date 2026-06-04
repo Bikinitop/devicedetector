@@ -105,3 +105,25 @@ func TestDetectNonBotHasNilBot(t *testing.T) {
 		t.Errorf("Bot = %+v, want nil", dev.Bot)
 	}
 }
+
+func TestDetectPopulatesOSAndBrowser(t *testing.T) {
+	d := New()
+	dev := d.Detect("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+	if dev.OS == nil || dev.OS.Name != "Windows" {
+		t.Errorf("OS = %+v, want Windows", dev.OS)
+	}
+	if dev.Browser == nil || dev.Browser.Name != "Chrome" || dev.Browser.Version != "120.0.0.0" {
+		t.Errorf("Browser = %+v, want {Chrome, 120.0.0.0}", dev.Browser)
+	}
+}
+
+func TestDetectBotHasNoOSOrBrowser(t *testing.T) {
+	d := New()
+	dev := d.Detect("Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)")
+	if dev.Type != Bot {
+		t.Fatalf("Type = %v, want Bot", dev.Type)
+	}
+	if dev.OS != nil || dev.Browser != nil {
+		t.Errorf("bot got OS=%+v Browser=%+v, want both nil", dev.OS, dev.Browser)
+	}
+}

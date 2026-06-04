@@ -28,6 +28,21 @@ func main() {
 }
 ```
 
+## OS and browser
+
+For non-bot User-Agents, `Detect` populates `Device.OS` and `Device.Browser`
+(each `nil` when nothing matches):
+
+```go
+device := d.Detect("Mozilla/5.0 (Windows NT 10.0; Win64; x64) ... Chrome/120.0.0.0 Safari/537.36")
+fmt.Println(device.OS.Name, device.OS.Version)           // Windows 10.0
+fmt.Println(device.Browser.Name, device.Browser.Version) // Chrome 120.0.0.0
+```
+
+Detection uses embedded, curated, ordered regex rulesets (`oss.json`,
+`browsers.json`); the version is taken verbatim from the User-Agent (e.g.
+Windows reports the NT version `10.0`, not the marketing name).
+
 ## Bot detection
 
 When the User-Agent matches a known bot, `Detect` sets `Type` to `Bot` and

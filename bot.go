@@ -43,14 +43,12 @@ func loadBotRules(data []byte) ([]botRule, error) {
 	}
 	rules := make([]botRule, 0, len(raw))
 	for i, r := range raw {
-		if r.Regex == "" || r.Name == "" {
-			return nil, fmt.Errorf("bot rule at index %d has empty regex or name", i)
+		if r.Name == "" {
+			return nil, fmt.Errorf("bot rule at index %d has empty name", i)
 		}
-		// Case-insensitivity is enforced centrally so each rule in bots.json
-		// need not carry (and cannot silently forget) a "(?i)" flag.
-		re, err := regexp.Compile("(?i)" + r.Regex)
+		re, err := compileInsensitive(r.Regex)
 		if err != nil {
-			return nil, fmt.Errorf("bad bot regex at index %d (%q): %w", i, r.Regex, err)
+			return nil, fmt.Errorf("bad bot rule at index %d (%q): %w", i, r.Regex, err)
 		}
 		rules = append(rules, botRule{re: re, name: r.Name, category: r.Category})
 	}
