@@ -1,0 +1,9 @@
+[
+  { "regex": "iphone os (\\d+[_\\d]+)", "name": "iOS" },
+  { "regex": "cpu os (\\d+[_\\d]+) like mac os x", "name": "iOS" },
+  { "regex": "mac os x (\\d+[_\\d]+)", "name": "macOS" },
+  { "regex": "android (\\d+[.\\d]*)", "name": "Android" },
+  { "regex": "cros \\S+ (\\d+[.\\d]*)", "name": "Chrome OS" },
+  { "regex": "windows nt (\\d+[.\\d]*)", "name": "Windows" },
+  { "regex": "linux", "name": "Linux" }
+]
