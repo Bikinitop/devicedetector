@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - name: Test with race detector and coverage
+        run: go test -race -coverprofile=coverage.out ./...
+      - name: Enforce coverage threshold
+        run: |
+          threshold=90
+          total=$(go tool cover -func=coverage.out | awk '/^total:/ {print substr($3, 1, length($3)-1)}')
+          echo "total coverage: ${total}%"
+          if awk -v t="$total" -v thr="$threshold" 'BEGIN { exit !(t+0 >= thr) }'; then
+            echo "coverage ${total}% meets the ${threshold}% threshold"
+          else
+            echo "::error::coverage ${total}% is below the ${threshold}% threshold"
+            exit 1
+          fi
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - name: gofmt
+        run: |
+          files=$(gofmt -l .)
+          if [ -n "$files" ]; then
+            echo "::error::these files are not gofmt-formatted:"
+            echo "$files"
+            exit 1
+          fi
+      - name: go vet
+        run: go vet ./...
