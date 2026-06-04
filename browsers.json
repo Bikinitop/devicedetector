@@ -2,6 +2,7 @@
   { "regex": "(?:^|[^a-z])edg(?:e|ios|a)?/(\\d+(?:\\.\\d+)*)", "name": "Edge" },
   { "regex": "opr/(\\d+(?:\\.\\d+)*)", "name": "Opera" },
   { "regex": "opera/(\\d+(?:\\.\\d+)*)", "name": "Opera" },
+  { "regex": "(?:^|[^a-z])opt/(\\d+(?:\\.\\d+)*)", "name": "Opera" },
   { "regex": "samsungbrowser/(\\d+(?:\\.\\d+)*)", "name": "Samsung Internet" },
   { "regex": "crios/(\\d+(?:\\.\\d+)*)", "name": "Chrome" },
   { "regex": "fxios/(\\d+(?:\\.\\d+)*)", "name": "Firefox" },

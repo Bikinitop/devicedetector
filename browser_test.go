@@ -52,6 +52,16 @@ func TestDetectBrowserEdgeBoundary(t *testing.T) {
 	}
 }
 
+func TestDetectBrowserOperaIOS(t *testing.T) {
+	// Opera on iOS uses the OPT/ token (not OPR/); it must be Opera, not the
+	// Safari fallback that the Version/.*Safari rule would otherwise match.
+	ua := "Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1 OPT/4.0.0"
+	got := detectBrowser(ua)
+	if got == nil || got.Name != "Opera" || got.Version != "4.0.0" {
+		t.Errorf("detectBrowser(%q) = %+v, want {Opera, 4.0.0}", ua, got)
+	}
+}
+
 func TestDetectBrowserVersionTrailingSeparator(t *testing.T) {
 	// A trailing dot in the UA version token must not leak into the version.
 	ua := "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0. Safari/537.36"
