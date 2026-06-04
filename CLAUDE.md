@@ -30,6 +30,8 @@ The core flow is `New() -> Detector.Detect(userAgent) -> Device`:
   category}` entry (specific rules before the generic catch-all). Bad
   data/regex panics at init; a test compiles every rule.
 
+- **OS and browser detection** (`os.go`, `browser.go`) run for non-bot UAs via a shared versioned matcher (`match.go`): embedded ordered regex rulesets (`oss.json`, `browsers.json`) whose capture group 1 is the version (`_`→`.` normalized). `Detect` sets `Device.OS`/`Device.Browser` (nil for bots / no match). Ordering is correctness-critical (iOS before macOS; browser derivatives before Chrome/Firefox; Safari after the Chrome family). To add a rule, add a `{regex, name}` entry with a version capture group; bad data/regex panics at init and a test compiles every rule.
+
 - `Detector` is an empty, immutable struct and is therefore safe for concurrent use — a single instance can be shared across goroutines. Do not add mutable state to it without revisiting that concurrency contract.
 - `Detect` lower-cases the User-Agent once, then delegates the actual categorization to the unexported `classify` helper. Keep `classify` operating on already-lowercased input so matching logic stays simple.
 - `DeviceType` is an `int`-backed enum implementing `Stringer`. When adding a new category, add the constant **and** its `String()` case together.
