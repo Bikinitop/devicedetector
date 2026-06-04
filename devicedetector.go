@@ -39,6 +39,10 @@ type Device struct {
 	// Bot is non-nil only when Type == Bot; it carries the identified bot's
 	// name and category.
 	Bot *BotInfo
+	// OS and Browser are populated for non-bot User-Agents when a rule
+	// matches; they are nil for bots or when nothing matches.
+	OS      *OSInfo
+	Browser *BrowserInfo
 }
 
 // Detector parses User-Agent strings. Create one with New and reuse it;
@@ -60,6 +64,8 @@ func (d *Detector) Detect(userAgent string) Device {
 	return Device{
 		Type:      classify(strings.ToLower(userAgent)),
 		UserAgent: userAgent,
+		OS:        detectOS(userAgent),
+		Browser:   detectBrowser(userAgent),
 	}
 }
 
