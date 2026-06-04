@@ -39,6 +39,17 @@ func TestBrandRulesLoaded(t *testing.T) {
 	}
 }
 
+func TestDetectBrandNexus(t *testing.T) {
+	// A real Nexus device brands as Google...
+	if got := detectBrand("Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5 Build/MOB30M) AppleWebKit/537.36"); got != "Google" {
+		t.Errorf("Nexus 5 brand = %q, want Google", got)
+	}
+	// ...but "nexus" inside an unrelated product token must not.
+	if got := detectBrand("Mozilla/5.0 (Windows NT 10.0; Win64; x64) Connexus/2.0"); got == "Google" {
+		t.Errorf("Connexus mis-detected as Google (nexus not anchored)")
+	}
+}
+
 func TestDetectBrandLegacySamsungPrefix(t *testing.T) {
 	// Older Samsung device tokens (GT-/SCH-/SGH-, not SM-) must still brand as
 	// Samsung — consistent with the model extractor recognizing them.
