@@ -34,3 +34,20 @@ func TestDetectModelNone(t *testing.T) {
 		}
 	}
 }
+
+func TestDetectModelLocaleBeforeModel(t *testing.T) {
+	// Older Android UAs carry a locale token before the model; the model must
+	// still be extracted (not lost, not the locale).
+	ua := "Mozilla/5.0 (Linux; U; Android 4.4.2; en-us; SCH-I535 Build/KOT49H) AppleWebKit/534.30"
+	if got := detectModel(ua); got != "SCH-I535" {
+		t.Errorf("detectModel(%q) = %q, want SCH-I535", ua, got)
+	}
+}
+
+func TestDetectModelTrimmed(t *testing.T) {
+	// Extra whitespace after the delimiter must not leak into the model.
+	ua := "Mozilla/5.0 (Linux; Android 13;  Pixel 7) AppleWebKit/537.36"
+	if got := detectModel(ua); got != "Pixel 7" {
+		t.Errorf("detectModel(%q) = %q, want Pixel 7 (trimmed)", ua, got)
+	}
+}

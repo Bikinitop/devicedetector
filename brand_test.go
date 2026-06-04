@@ -38,3 +38,18 @@ func TestBrandRulesLoaded(t *testing.T) {
 		t.Fatal("brandRules is empty; brands.json failed to load")
 	}
 }
+
+func TestDetectBrandNoSubstringFalsePositive(t *testing.T) {
+	// Brand tokens must be anchored so they don't match inside unrelated words.
+	cases := []struct{ name, ua string }{
+		{"lipad not apple", "Mozilla/5.0 (Linux; Android 13; Lipad-X1) AppleWebKit/537.36"},
+		{"experia not sony", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) ExperiaSoft/3.0"},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			if got := detectBrand(c.ua); got != "" {
+				t.Errorf("detectBrand(%q) = %q, want \"\" (no substring false positive)", c.ua, got)
+			}
+		})
+	}
+}
