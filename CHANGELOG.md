@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/Bikinitop/devicedetector/compare/v0.2.0...v0.3.0) (2026-06-04)
+
+
+### Features
+
+* device brand + raw model detection ([#9](https://github.com/Bikinitop/devicedetector/issues/9)) ([a396cc0](https://github.com/Bikinitop/devicedetector/commit/a396cc05fa93146216b0a3e1a8ed797f29899a1a))
+
 ## [0.2.0](https://github.com/Bikinitop/devicedetector/compare/v0.1.0...v0.2.0) (2026-06-04)
 
 
