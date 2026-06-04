@@ -39,6 +39,22 @@ func TestBrandRulesLoaded(t *testing.T) {
 	}
 }
 
+func TestDetectBrandLegacySamsungPrefix(t *testing.T) {
+	// Older Samsung device tokens (GT-/SCH-/SGH-, not SM-) must still brand as
+	// Samsung — consistent with the model extractor recognizing them.
+	cases := []struct{ name, ua string }{
+		{"sch", "Mozilla/5.0 (Linux; U; Android 4.4.2; en-us; SCH-I535 Build/KOT49H) AppleWebKit/534.30"},
+		{"gt", "Mozilla/5.0 (Linux; U; Android 4.3; en-us; GT-I9300 Build/JSS15J) AppleWebKit/534.30"},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			if got := detectBrand(c.ua); got != "Samsung" {
+				t.Errorf("detectBrand(%q) = %q, want Samsung", c.ua, got)
+			}
+		})
+	}
+}
+
 func TestDetectBrandFromDeviceNotBrowser(t *testing.T) {
 	// Samsung Internet (SamsungBrowser) on a non-Samsung device must not
 	// override the actual device brand — brand is device-based, not browser-based.

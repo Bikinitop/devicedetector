@@ -1,6 +1,6 @@
 [
   { "regex": "(?:^|[^a-z])(?:iphone|ipad|ipod|macintosh)", "name": "Apple" },
-  { "regex": "(?:^|[^a-z])sm-[a-z0-9]+", "name": "Samsung" },
+  { "regex": "(?:^|[^a-z])(?:sm|gt|sch|sgh|sph)-[a-z0-9]+", "name": "Samsung" },
   { "regex": "(?:^|[^a-z])pixel|nexus", "name": "Google" },
   { "regex": "redmi|(?:^|[^a-z])poco|xiaomi", "name": "Xiaomi" },
   { "regex": "huawei|(?:^|[^a-z])honor", "name": "Huawei" },
