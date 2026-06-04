@@ -41,3 +41,13 @@ func TestOSRulesLoaded(t *testing.T) {
 		t.Fatal("osRules is empty; oss.json failed to load")
 	}
 }
+
+func TestDetectOSAndroidWithoutVersion(t *testing.T) {
+	// An Android UA that omits the version must still report Android (with an
+	// empty version), not fall through to Linux.
+	ua := "Mozilla/5.0 (Linux; U; Android; en-us) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1"
+	got := detectOS(ua)
+	if got == nil || got.Name != "Android" || got.Version != "" {
+		t.Errorf("detectOS(%q) = %+v, want {Android, \"\"}", ua, got)
+	}
+}
