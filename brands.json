@@ -1,0 +1,14 @@
+[
+  { "regex": "iphone|ipad|ipod|macintosh", "name": "Apple" },
+  { "regex": "(?:^|[^a-z])sm-[a-z0-9]+|samsung", "name": "Samsung" },
+  { "regex": "(?:^|[^a-z])pixel|nexus", "name": "Google" },
+  { "regex": "redmi|poco|xiaomi", "name": "Xiaomi" },
+  { "regex": "huawei|(?:^|[^a-z])honor", "name": "Huawei" },
+  { "regex": "oneplus", "name": "OnePlus" },
+  { "regex": "(?:^|[^a-z])oppo", "name": "Oppo" },
+  { "regex": "(?:^|[^a-z])realme", "name": "Realme" },
+  { "regex": "(?:^|[^a-z])(?:moto|xt\\d)", "name": "Motorola" },
+  { "regex": "xperia", "name": "Sony" },
+  { "regex": "nokia", "name": "Nokia" },
+  { "regex": "(?:^|[^a-z])asus", "name": "Asus" }
+]
