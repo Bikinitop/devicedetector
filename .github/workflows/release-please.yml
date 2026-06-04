@@ -12,6 +12,11 @@ jobs:
   release-please:
     runs-on: ubuntu-latest
     steps:
+      # Uses the default GITHUB_TOKEN. Note: PRs opened by this token do NOT
+      # trigger other workflows, so the Release PR will not run ci.yml. That is
+      # fine today (main has no required checks); if branch protection later
+      # requires the CI check, pass a PAT or GitHub App token via `token:` so
+      # the Release PR triggers CI.
       - uses: googleapis/release-please-action@v4
         with:
           config-file: release-please-config.json
