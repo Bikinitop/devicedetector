@@ -52,6 +52,15 @@ func TestDetectBrowserEdgeBoundary(t *testing.T) {
 	}
 }
 
+func TestDetectBrowserAndroidNotSafari(t *testing.T) {
+	// An old Android stock-browser UA ("Version/X Mobile Safari", no Chrome
+	// token) must not be mislabeled as Safari — Safari is gated to Apple UAs.
+	ua := "Mozilla/5.0 (Linux; U; Android; en-us) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1"
+	if got := detectBrowser(ua); got != nil && got.Name == "Safari" {
+		t.Errorf("detectBrowser(%q) = %+v, want not Safari", ua, got)
+	}
+}
+
 func TestDetectBrowserOperaIOS(t *testing.T) {
 	// Opera on iOS uses the OPT/ token (not OPR/); it must be Opera, not the
 	// Safari fallback that the Version/.*Safari rule would otherwise match.

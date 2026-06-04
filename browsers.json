@@ -8,5 +8,5 @@
   { "regex": "fxios/(\\d+(?:\\.\\d+)*)", "name": "Firefox" },
   { "regex": "firefox/(\\d+(?:\\.\\d+)*)", "name": "Firefox" },
   { "regex": "chrome/(\\d+(?:\\.\\d+)*)", "name": "Chrome" },
-  { "regex": "version/(\\d+(?:\\.\\d+)*).*safari", "name": "Safari" }
+  { "regex": "(?:iphone|ipad|macintosh).*version/(\\d+(?:\\.\\d+)*).*safari", "name": "Safari" }
 ]
