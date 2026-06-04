@@ -42,3 +42,21 @@ func TestBrowserRulesLoaded(t *testing.T) {
 		t.Fatal("browserRules is empty; browsers.json failed to load")
 	}
 }
+
+func TestDetectBrowserEdgeBoundary(t *testing.T) {
+	// "edg" embedded inside an ordinary token ("Knowledge/1.0") must NOT be
+	// detected as Edge.
+	ua := "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 SomeKnowledge/1.0"
+	if got := detectBrowser(ua); got != nil && got.Name == "Edge" {
+		t.Errorf("detectBrowser(%q) = %+v, want not Edge", ua, got)
+	}
+}
+
+func TestDetectBrowserVersionTrailingSeparator(t *testing.T) {
+	// A trailing dot in the UA version token must not leak into the version.
+	ua := "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0. Safari/537.36"
+	got := detectBrowser(ua)
+	if got == nil || got.Name != "Chrome" || got.Version != "120.0" {
+		t.Errorf("detectBrowser(%q) = %+v, want {Chrome, 120.0}", ua, got)
+	}
+}
