@@ -32,6 +32,8 @@ The core flow is `New() -> Detector.Detect(userAgent) -> Device`:
 
 - **OS and browser detection** (`os.go`, `browser.go`) run for non-bot UAs via a shared versioned matcher (`match.go`): embedded ordered regex rulesets (`oss.json`, `browsers.json`) whose capture group 1 is the version (`_`→`.` normalized). `Detect` sets `Device.OS`/`Device.Browser` (nil for bots / no match). Ordering is correctness-critical (iOS before macOS; browser derivatives before Chrome/Firefox; Safari after the Chrome family). To add a rule, add a `{regex, name}` entry with a version capture group; bad data/regex panics at init and a test compiles every rule.
 
+- **Brand and model detection** (`brand.go`, `model.go`) run for non-bot UAs: `detectBrand` matches a curated `brands.json` token ruleset (via the shared `matchFirst`, the raw-capture sibling of `matchVersioned`); `detectModel` uses two patterns (Apple device word; the Android model token between the OS version and `Build`/`)`). `Detect` sets `Device.Brand`/`Device.Model` (`""` for bots / no match). The model is raw — no marketing-name mapping.
+
 - `Detector` is an empty, immutable struct and is therefore safe for concurrent use — a single instance can be shared across goroutines. Do not add mutable state to it without revisiting that concurrency contract.
 - `Detect` lower-cases the User-Agent once, then delegates the actual categorization to the unexported `classify` helper. Keep `classify` operating on already-lowercased input so matching logic stays simple.
 - `DeviceType` is an `int`-backed enum implementing `Stringer`. When adding a new category, add the constant **and** its `String()` case together.

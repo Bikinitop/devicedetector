@@ -43,6 +43,11 @@ type Device struct {
 	// matches; they are nil for bots or when nothing matches.
 	OS      *OSInfo
 	Browser *BrowserInfo
+	// Brand and Model are the raw device brand and model for non-bot
+	// User-Agents; "" when unknown. Model is verbatim, not mapped to a
+	// marketing name.
+	Brand string
+	Model string
 }
 
 // Detector parses User-Agent strings. Create one with New and reuse it;
@@ -66,6 +71,8 @@ func (d *Detector) Detect(userAgent string) Device {
 		UserAgent: userAgent,
 		OS:        detectOS(userAgent),
 		Browser:   detectBrowser(userAgent),
+		Brand:     detectBrand(userAgent),
+		Model:     detectModel(userAgent),
 	}
 }
 

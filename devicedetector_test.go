@@ -127,3 +127,25 @@ func TestDetectBotHasNoOSOrBrowser(t *testing.T) {
 		t.Errorf("bot got OS=%+v Browser=%+v, want both nil", dev.OS, dev.Browser)
 	}
 }
+
+func TestDetectPopulatesBrandAndModel(t *testing.T) {
+	d := New()
+	dev := d.Detect("Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36")
+	if dev.Brand != "Google" {
+		t.Errorf("Brand = %q, want Google", dev.Brand)
+	}
+	if dev.Model != "Pixel 7" {
+		t.Errorf("Model = %q, want Pixel 7", dev.Model)
+	}
+}
+
+func TestDetectBotHasNoBrandOrModel(t *testing.T) {
+	d := New()
+	dev := d.Detect("Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)")
+	if dev.Type != Bot {
+		t.Fatalf("Type = %v, want Bot", dev.Type)
+	}
+	if dev.Brand != "" || dev.Model != "" {
+		t.Errorf("bot got Brand=%q Model=%q, want both empty", dev.Brand, dev.Model)
+	}
+}
