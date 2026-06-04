@@ -43,6 +43,17 @@ Detection uses embedded, curated, ordered regex rulesets (`oss.json`,
 `browsers.json`); the version is taken verbatim from the User-Agent (e.g.
 Windows reports the NT version `10.0`, not the marketing name).
 
+`Detect` also sets `Device.Brand` and `Device.Model` (both `""` when unknown):
+
+```go
+device := d.Detect("Mozilla/5.0 (Linux; Android 13; Pixel 7) ... Chrome/120.0.0.0 Mobile Safari/537.36")
+fmt.Println(device.Brand, "-", device.Model) // Google - Pixel 7
+```
+
+The brand comes from a curated token ruleset (`brands.json`); the model is the
+**raw** identifier from the User-Agent (e.g. `SM-G991B`, not "Galaxy S21"), and
+Apple reports only the device word (`iPhone`/`iPad`).
+
 ## Bot detection
 
 When the User-Agent matches a known bot, `Detect` sets `Type` to `Bot` and
